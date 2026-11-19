@@ -3,7 +3,7 @@ import { api, type Filtros } from '../api'
 import { Card } from '../components/Card'
 import ImovelForm from '../components/ImovelForm'
 import PageHeader from '../components/PageHeader'
-import { moeda, numero } from '../format'
+import { moeda, numero, plural } from '../format'
 import { TIPOS, type Imovel, type ImovelInput } from '../types'
 
 const campo = 'rounded-lg border border-line bg-ink px-3 py-2 text-sm text-white outline-none focus:border-brand'
@@ -112,7 +112,7 @@ export default function Imoveis() {
                   <td className="py-3 pr-3">
                     <p className="font-medium text-white">{i.titulo}</p>
                     <p className="text-xs text-slate-500">
-                      {i.tipo} · {i.quartos} qts · {i.vagas} vagas
+                      {i.tipo} · {plural(i.quartos, 'quarto')} · {plural(i.vagas, 'vaga')}
                     </p>
                   </td>
                   <td className="py-3 pr-3 text-slate-300">{i.bairro}</td>

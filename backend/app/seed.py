@@ -60,7 +60,7 @@ def gerar_imoveis(qtd_por_bairro: int = 7, semente: int = 42) -> list[Imovel]:
             preco = round(area * m2_ref * fator, -3)
             imoveis.append(
                 Imovel(
-                    titulo=f"{tipo} {quartos} quartos em {bairro}" if quartos else f"{tipo} em {bairro}",
+                    titulo=f"{tipo} {quartos} quarto{'' if quartos == 1 else 's'} em {bairro}" if quartos else f"{tipo} em {bairro}",
                     bairro=bairro,
                     tipo=tipo,
                     area_m2=area,

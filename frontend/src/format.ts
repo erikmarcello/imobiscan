@@ -8,3 +8,7 @@ export const moedaCurta = (v: number) => {
   if (v >= 1_000) return `R$ ${num.format(v / 1_000)} mil`
   return brl.format(v)
 }
+
+/** "1 quarto", "2 quartos", "0 vagas" */
+export const plural = (n: number, singular: string, pluralForm = `${singular}s`) =>
+  `${n} ${n === 1 ? singular : pluralForm}`
