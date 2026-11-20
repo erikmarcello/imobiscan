@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from . import models, schemas
+from . import analytics, models, schemas
 from .db import Base, SessionLocal, engine, get_db
 from .seed import popular_se_vazio
 
@@ -18,7 +18,7 @@ async def lifespan(_: FastAPI):
     yield
 
 
-app = FastAPI(title="ImobiScan API", version="0.2.0", lifespan=lifespan)
+app = FastAPI(title="ImobiScan API", version="0.3.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -98,3 +98,24 @@ def remover_imovel(imovel_id: int, db: Session = Depends(get_db)):
 @app.get("/api/bairros", response_model=list[str])
 def listar_bairros(db: Session = Depends(get_db)):
     return db.scalars(select(models.Imovel.bairro).distinct().order_by(models.Imovel.bairro)).all()
+
+
+@app.get("/api/mercado/resumo")
+def mercado_resumo(db: Session = Depends(get_db)):
+    return analytics.resumo_geral(db.scalars(select(models.Imovel)).all())
+
+
+@app.get("/api/mercado/bairros")
+def mercado_bairros(tipo: str | None = None, db: Session = Depends(get_db)):
+    q = select(models.Imovel)
+    if tipo:
+        q = q.where(models.Imovel.tipo == tipo)
+    return analytics.por_bairro(db.scalars(q).all())
+
+
+@app.get("/api/mercado/tendencia")
+def mercado_tendencia(bairro: str | None = None, db: Session = Depends(get_db)):
+    q = select(models.Imovel)
+    if bairro:
+        q = q.where(models.Imovel.bairro == bairro)
+    return analytics.tendencia_mensal(db.scalars(q).all())

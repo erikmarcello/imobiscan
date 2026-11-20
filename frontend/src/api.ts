@@ -1,4 +1,4 @@
-import type { Imovel, ImovelInput } from './types'
+import type { BairroStats, Imovel, ImovelInput, Resumo, Tendencia } from './types'
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`/api${path}`, {
@@ -30,4 +30,7 @@ export const api = {
     request<Imovel>(`/imoveis/${id}`, { method: 'PUT', body: JSON.stringify(dados) }),
   removerImovel: (id: number) => request<void>(`/imoveis/${id}`, { method: 'DELETE' }),
   bairros: () => request<string[]>('/bairros'),
+  resumo: () => request<Resumo>('/mercado/resumo'),
+  mercadoBairros: (tipo?: string) => request<BairroStats[]>(`/mercado/bairros${query({ tipo })}`),
+  tendencia: (bairro?: string) => request<Tendencia>(`/mercado/tendencia${query({ bairro })}`),
 }

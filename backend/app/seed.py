@@ -35,7 +35,7 @@ def _tipo(rng: random.Random) -> str:
     return "Apartamento"
 
 
-def gerar_imoveis(qtd_por_bairro: int = 7, semente: int = 42) -> list[Imovel]:
+def gerar_imoveis(qtd_por_bairro: int = 12, semente: int = 42) -> list[Imovel]:
     rng = random.Random(semente)
     hoje = date.today()
     imoveis = []
@@ -51,7 +51,8 @@ def gerar_imoveis(qtd_por_bairro: int = 7, semente: int = 42) -> list[Imovel]:
             else:
                 area, quartos = rng.randint(40, 160), rng.randint(1, 4)
 
-            fator = rng.uniform(0.85, 1.18)
+            dias = rng.randint(0, 365)
+            fator = rng.uniform(0.85, 1.18) * (1 - 0.008 * dias / 30)  # leve valorização ao longo do ano
             if rng.random() < 0.12:  # alguns anúncios bem abaixo do mercado
                 fator = rng.uniform(0.68, 0.80)
             if tipo == "Cobertura":
@@ -71,7 +72,7 @@ def gerar_imoveis(qtd_por_bairro: int = 7, semente: int = 42) -> list[Imovel]:
                     iptu=round(preco * rng.uniform(0.0008, 0.0015) / 12, -1),  # mensal
                     lat=round(lat + rng.uniform(-0.012, 0.012), 6),
                     lng=round(lng + rng.uniform(-0.012, 0.012), 6),
-                    anunciado_em=hoje - timedelta(days=rng.randint(0, 365)),
+                    anunciado_em=hoje - timedelta(days=dias),
                     descricao="Imóvel de demonstração.",
                 )
             )
